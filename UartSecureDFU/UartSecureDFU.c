@@ -2,6 +2,7 @@
 //
 
 #include <stdio.h>
+#include <stdbool.h>
 #include <string.h>
 #include "uart_drv.h"
 #include "uart_slip.h"
@@ -14,6 +15,18 @@ static int is_argv_verbose(char *p_argv)
 	int err_code;
 
 	if (!strcmp(p_argv, "-v") || !strcmp(p_argv, "-V"))
+		err_code = 0;
+	else
+		err_code = 1;
+
+	return err_code;
+}
+
+static int is_argv_enable_rts_cts_handshake(char *p_argv)
+{
+	int err_code;
+
+	if (!strcmp(p_argv, "-enable_rts_cts_handshake"))
 		err_code = 0;
 	else
 		err_code = 1;
@@ -47,8 +60,15 @@ int main(int argc, char *argv[])
 		err_code = 1;
 	}
 
+	uart_drv.enable_rts_cts_handshake = false;
 	for (argn = 3; argn < argc && !err_code; argn++)
 	{
+		err_code = is_argv_enable_rts_cts_handshake(argv[argn]);
+		if (!err_code)
+		{
+			uart_drv.enable_rts_cts_handshake = true;
+		}
+
 		err_code = is_argv_verbose(argv[argn]);
 		if (!err_code)
 		{
@@ -70,7 +90,7 @@ int main(int argc, char *argv[])
 
 	if (show_usage)
 	{
-		printf("Usage: UartSecureDFU serial_port package_name [-v] [-v] [-v]\n");
+		printf("Usage: UartSecureDFU serial_port package_name [-v] [-v] [-v] [-enable-rts-cts-handshake]\n");
 	}
 
 	uart_drv.p_PortName = portName;

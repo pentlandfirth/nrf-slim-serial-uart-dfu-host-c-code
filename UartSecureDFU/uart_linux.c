@@ -90,8 +90,11 @@ int uart_drv_open(uart_drv_t *p_uart)
 		options.c_cflag |= CS8;
 		// ignore DCD line
 		options.c_cflag |= (CLOCAL | CREAD);
-		// enable RTS/CTS handshake
-		// options.c_cflag |= CRTSCTS;
+		if (p_uart->enable_rts_cts_handshake)
+		{
+            // enable RTS/CTS handshake
+			options.c_cflag |= CRTSCTS;
+		}
 		// disabe XON/XOFF handshake
 		options.c_iflag &= ~(IXON | IXOFF | IXANY);
 		// disabe input mapping options

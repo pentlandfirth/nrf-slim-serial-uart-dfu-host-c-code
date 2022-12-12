@@ -44,6 +44,7 @@
 #define _INC_UART_DRV
 
 #include <stdint.h>
+#include <stdbool.h>
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -55,6 +56,7 @@ extern "C" {
 
 typedef struct {
 	const char *p_PortName;
+	bool enable_rts_cts_handshake;
 
 #ifdef WIN32
 	HANDLE portHandle;
